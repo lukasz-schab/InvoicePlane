@@ -59,26 +59,32 @@ jobs:
       # ----------------------------------------------------------------
       # Sources: InvoicePlane (at the tag) + themes + e-invoices + build-scripts
       # ----------------------------------------------------------------
+      - name: Harden the runner
+        uses: step-security/harden-runner@351661ca32ac09a36dc5ee2d536e3128f2a3c8ed # v2.22.0
+        with:
+          use-policy-store: true
+          api-key: ${{ secrets.STEP_SECURITY_API_KEY }}
+
       - name: Checkout InvoicePlane (tag)
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 0
           fetch-tags: true
 
       - name: Checkout build-scripts (for workflow.sh)
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           repository: InvoicePlane/build-scripts
           path: _build-scripts
 
       - name: Checkout themes
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           repository: InvoicePlane/InvoicePlane-Themes
           path: _themes
 
       - name: Checkout e-invoices
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           repository: InvoicePlane/InvoicePlane-e-invoices
           path: _e-invoices
@@ -247,7 +253,7 @@ jobs:
       - name: Download translations from Crowdin
         id: crowdin
         continue-on-error: true
-        uses: crowdin/github-action@v2
+        uses: crowdin/github-action@8f01d54f70f1713ee3f09d82c2bbb2daeac28689 # v2.17.1
         with:
           download_translations: true
           create_pull_request: false
@@ -260,14 +266,14 @@ jobs:
       # Toolchain
       # ----------------------------------------------------------------
       - name: Set up PHP 8.2
-        uses: shivammathur/setup-php@v2
+        uses: step-security/setup-php@de840ac176c62a2558231845e09841c1b62e0bd0 # v2.37.2
         with:
           php-version: '8.2'
           extensions: gd, bcmath, dom, intl, xml, zip, mbstring, curl
           tools: composer
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: '.node-version'
           cache: 'yarn'
@@ -303,7 +309,7 @@ jobs:
       # Publish: artifact + draft GitHub release
       # ----------------------------------------------------------------
       - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: ip-${{ steps.version.outputs.version }}
           path: |
@@ -313,7 +319,7 @@ jobs:
           retention-days: 90
 
       - name: Create draft GitHub release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v1
         with:
           tag_name: ${{ steps.version.outputs.version }}
           name: InvoicePlane ${{ steps.version.outputs.version }}

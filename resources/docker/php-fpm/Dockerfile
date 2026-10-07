@@ -1,4 +1,4 @@
-FROM php:8.2-fpm
+FROM php:8.2-fpm@sha256:e6e6927a36650d475290dcfa032bc1ca2036769cc1976ccc7f69047f5ffd3cce
 
 # Set environment variables
 ARG TZ=UTC
