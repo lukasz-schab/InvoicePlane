@@ -28,13 +28,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Harden the runner
+        uses: step-security/harden-runner@351661ca32ac09a36dc5ee2d536e3128f2a3c8ed # v2.22.0
+        with:
+          use-policy-store: true
+          api-key: ${{ secrets.STEP_SECURITY_API_KEY }}
+
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '22'
           cache: 'yarn'
@@ -85,7 +91,7 @@ jobs:
 
       - name: Create pull request
         if: steps.changes.outputs.detected == 'true'
-        uses: peter-evans/create-pull-request@v6
+        uses: step-security/create-pull-request@50c103da2b9ca12cd5bc013fc6931051a5aa872b # v8.1.1
         with:
           token: ${{ secrets.PAT_TOKEN }}
           commit-message: "chore(deps): update Yarn dependencies (${{ github.event.inputs.update_type || 'security-updates' }})"

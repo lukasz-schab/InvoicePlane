@@ -34,6 +34,9 @@ env:
   RELEASE_TYPE: ${{ github.event.inputs.release_type || 'alpha' }}
   LOG_DIR: 'workflow_logs'
 
+permissions:
+  contents: read
+
 jobs:
   build-release:
     name: Build and Package Production Release
@@ -44,8 +47,14 @@ jobs:
       actions: write   # Required for uploading artifacts
 
     steps:
+      - name: Harden the runner
+        uses: step-security/harden-runner@351661ca32ac09a36dc5ee2d536e3128f2a3c8ed # v2.22.0
+        with:
+          use-policy-store: true
+          api-key: ${{ secrets.STEP_SECURITY_API_KEY }}
+
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 0  # Fetch full history for proper tag management
           fetch-tags: true  # Fetch tags for versioning
@@ -60,7 +69,7 @@ jobs:
       - name: Download translations from Crowdin
         id: crowdin
         continue-on-error: true
-        uses: crowdin/github-action@v2
+        uses: crowdin/github-action@8f01d54f70f1713ee3f09d82c2bbb2daeac28689 # v2.17.1
         with:
           download_translations: true
           localization_branch_name: master
@@ -106,7 +115,7 @@ jobs:
 
       # Step 4: Set up Node.js for frontend build
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '20'
           cache: 'yarn'
@@ -439,7 +448,7 @@ jobs:
 
       # Step 8: Upload release artifact
       - name: Upload release artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: ip-${{ env.NEW_VERSION }}
           path: |
@@ -452,7 +461,7 @@ jobs:
 
       # Step 9: Create GitHub Draft Pre-Release
       - name: Create GitHub Draft Pre-Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v1
         with:
           tag_name: ${{ env.NEW_TAG }}
           name: Release ${{ env.NEW_TAG }}

@@ -1,4 +1,4 @@
-FROM mariadb:10.11
+FROM mariadb:10.11@sha256:7db29378d4fdab73f8123bbc2b48905c90d1a4b00cf848b028f1e81e623257f2
 
 #####################################
 # Set Timezone
